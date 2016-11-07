@@ -1,6 +1,6 @@
 from secrets import MITE_URL, MITE_API_KEY, USERS
 from requests import get
-from utils import user_entry, user_statistics
+from utils import user_entry, user_statistics, tasks_per_day
 
 HEADERS = {'X-MiteApiKey': MITE_API_KEY, 'Content-Type': 'application/json'}
 
@@ -20,10 +20,14 @@ def data_of_mite(headers=HEADERS):
             uid = x['user']['id']
             url = time_entries_url.format(MITE_URL, uid)
             entries = [user_entry(e) for e in get(url, headers=headers).json()]
+
+            entries = augment_from_notes(entries)
+
             statistics = user_statistics(entries)
             users[name] = {
                 'id': uid,
                 'entries': entries,
-                'statistics': statistics
+                'statistics': statistics,
+                'week': tasks_per_day(entries)
             }
     return users

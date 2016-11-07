@@ -1,4 +1,14 @@
 from collections import Counter
+from dateutil import parser
+
+
+def tasks_per_day(entries):
+    week = {}
+    for e in entries:
+        day = week.get(e['day'], [])
+        day.append(e)
+        week[e['day']] = day
+    return week
 
 
 def user_statistics(entries):
@@ -22,7 +32,7 @@ def user_statistics(entries):
         'projects': count('project_name'),
         'tasks': count('service_name'),
         'time total': sum(minutes)/60,
-        'mean per entry': (sum(minutes)/(len(entries)*1.))/60,
+        'mean per entry': (sum(minutes)/(len(entries)))/60.,
         'longest entry': max(minutes)/60,
         'shortest entry': min(minutes)/60,
         'different projects': len(count('project_name')),
@@ -54,6 +64,7 @@ def user_entry(e):
         'project_name': time_entry['project_name'],
         'project_id': time_entry['project_id'],
         'date_at': time_entry['date_at'],
+        'day': parser.parse(time_entry['date_at']).strftime("%A"),
         'billable': time_entry['billable'],
         'service_name': time_entry['service_name'],
         'service_id': time_entry['service_id']
