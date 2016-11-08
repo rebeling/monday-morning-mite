@@ -1,5 +1,6 @@
 
 def overview(users, notes=False):
+
     for i, u in enumerate(users):
         print '{}. {}\n{}'.format(i, u, '-'*79)
 
